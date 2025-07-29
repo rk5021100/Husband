@@ -131,6 +131,20 @@
       font-size: 1vw;
       line-height: 1.8;
     }
+    
+    
+    
+    @keyframes jump {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-10vh); }
+  60% { transform: translateY(0); }
+  80% { transform: translateY(-5vh); }
+  100% { transform: translateY(0); }
+}
+
+.character.jump {
+  animation: jump 0.6s ease;
+}
 
     @media (orientation: portrait) {
       body::before {
@@ -264,31 +278,41 @@
     }
 
     function checkGameState() {
-      const count = { left: {}, right: {} };
-      ['h1','h2','h3','w1','w2','w3'].forEach(id => {
-        let loc = characterState[id];
-        if (loc === 'boat') loc = boatSide;
-        count[loc][id] = true;
-      });
+  const count = { left: {}, right: {} };
+  ['h1','h2','h3','w1','w2','w3'].forEach(id => {
+    let loc = characterState[id];
+    if (loc === 'boat') loc = boatSide;
+    count[loc][id] = true;
+  });
 
-      for (const side of ['left','right']) {
-        for (let wife of ['w1','w2','w3']) {
-          if (count[side][wife]) {
-            const husband = 'h' + wife[1];
-            if (!count[side][husband]) {
-              const otherHusbands = ['h1','h2','h3'].filter(h => h !== husband && count[side][h]);
-              if (otherHusbands.length > 0) {
-                showEnd("❌ Game Over! Jealousy rule broken!", false);
-                return;
-              }
-            }
+  for (const side of ['left','right']) {
+    for (let wife of ['w1','w2','w3']) {
+      if (count[side][wife]) {
+        const husband = 'h' + wife[1];
+        if (!count[side][husband]) {
+          const otherHusbands = ['h1','h2','h3'].filter(h => h !== husband && count[side][h]);
+          if (otherHusbands.length > 0) {
+            // Trigger jump animation for the jealous husband
+            const jealousHusband = document.getElementById(husband);
+            jealousHusband.classList.add("jump");
+
+            // Remove the animation class after 700ms
+            setTimeout(() => {
+              jealousHusband.classList.remove("jump");
+              // Now show Game Over screen AFTER animation
+              showEnd("❌ Game Over! ", false);
+            }, 700); // Wait for jump animation to complete
+
+            return;
           }
         }
       }
-
-      const allRight = characters.every(c => characterState[c.id] === "right");
-      if (allRight) showEnd("🎉 All couples safely crossed!", true);
     }
+  }
+
+  const allRight = characters.every(c => characterState[c.id] === "right");
+  if (allRight) showEnd("🎉 All couples safely crossed!", true);
+}
 
     function showEnd(msg, win) {
       overlay.style.display = "flex";
