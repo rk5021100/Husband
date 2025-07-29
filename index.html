@@ -153,13 +153,12 @@
       <div style="max-width: 90vw; max-height: 80vh; overflow-y: auto; text-align: left; background: white; border-radius: 20px; padding: 20px; color: black;">
         <h2 style="text-align: center;">📜 Game Rules</h2>
         <ul style="line-height: 1.8; font-size: 1em;">
-          <li>🧍‍♂️ <b>People:</b> There are 3 missionaries and 3 cannibals.</li>
-          <li>🚤 <b>Boat:</b> The boat can carry a maximum of 2 people.</li>
-          <li>🌊 <b>Crossing:</b> Only one or two people can be in the boat when crossing the river.</li>
-          <li>⚠️ <b>Danger:</b> If at any time, there are more cannibals than missionaries on either bank, the cannibals will eat the missionaries.</li>
-          <li>🎯 <b>Goal:</b> Safely transport all missionaries and cannibals to the other side of the river.</li>
-          <li>🚫 <b>Constraint:</b> The number of missionaries must always be greater than or equal to the number of cannibals on each side of the river.</li>
-        </ul>
+         <li>The boat can carry <strong>1 or 2 characters</strong> at a time.</li>
+         <li>Only characters on the <strong>same side as the boat</strong> can get on or off.</li>
+         <li><strong>No wife</strong> can be left with another man <strong>unless her husband is present</strong>.</li>
+         <li>If this rule is broken, the game will end with <strong>Game Over</strong>.</li>
+         <li>The goal is to get <strong>all 6 characters</strong> safely to the right island.</li>
+    </ul>
         <div style="text-align: center; margin-top: 20px;">
           <button onclick="closeRules()" style="font-size: 2em;">Close</button>
         </div>
@@ -289,11 +288,11 @@ function resetGame() {
 }
 
 function showRules() {
-  document.getElementById("rulesModal").style.display = "flex";
+  document.getElementById("rulesOverlay").style.display = "flex";
 }
 
 function closeRules() {
-  document.getElementById("rulesModal").style.display = "none";
+  document.getElementById("rulesOverlay").style.display = "none";
 }
 
     updatePositions();
