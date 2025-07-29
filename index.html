@@ -79,52 +79,58 @@
       border-radius: 1vh;
       cursor: pointer;
     }
+
+    /* 🟡 GAME OVER / WIN OVERLAY STYLE */
     .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: transparent;
+      background: rgba(0, 0, 0, 0.85);
       color: white;
       display: none;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      font-size: 1.5em;
+      font-size: 3vw;
+      text-align: center;
       z-index: 999;
-    
+      padding: 30px;
     }
 
-    .rules-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  color: black;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.rules-box > div {
-  max-width: 90vw;
-  max-height: 80vh;
-  overflow-y: auto;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  font-size: 1em;
-  line-height: 1.8;
-}
     .overlay button {
       margin-top: 20px;
       font-size: 2em;
       padding: 10px 30px;
     }
+
+    /* Rules Box */
+    .rules-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      color: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .rules-box > div {
+      max-width: 90vw;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      font-size: 1em;
+      line-height: 1.8;
+    }
+
     @media (orientation: portrait) {
       body::before {
         content: "Please rotate your device to landscape mode.";
@@ -153,47 +159,50 @@
       <button onclick="resetGame()">Reset</button>
       <button onclick="showRules()">Rules</button>
     </div>
+
+    <!-- Characters -->
     <img id="h1" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/redman.png">
     <img id="h2" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/blueman.png">
     <img id="h3" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/yellowman.png">
     <img id="w1" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/redwife.png">
     <img id="w2" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/bluewife.png">
     <img id="w3" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/yellowwife.png">
+
     <img class="boat" id="boat" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/boat.png">
     <div class="island left"></div>
     <div class="island right"></div>
     <div class="river"></div>
+
+    <!-- 🔴 OVERLAY -->
     <div id="overlay" class="overlay">
       <div id="message"></div>
       <button onclick="resetGame()">Restart</button>
     </div>
-  
-  
-  
-  <!-- Rules Overlay -->
-<div id="rulesOverlay" class="rules-box">
-  
-     <div style="max-width: 90vw; max-height: 80vh; overflow-y: auto; text-align: left; background: white; border-radius: 20px; padding: 20px;">
+
+    <!-- Rules Box -->
+    <div id="rulesOverlay" class="rules-box">
+      <div>
         <h2 style="text-align: center;">📝 Game Rules</h2>
-        <ul style="line-height: 1.8; font-size: 1em;">
-      <li>🎯 <b>Objective:</b> Help all 3 couples (husbands and wives) cross the river safely to the right island.</li>
-      <li>🚤 <b>Boat:</b> Can carry 1 or 2 characters at a time. Only characters on the same side as the boat can board or disembark.</li>
-      <li>💔 <b>Jealousy Rule:</b> No wife can be left with another man unless her own husband is present. If this happens, the game ends in failure.</li>
-      <li>👆 <b>Tap:</b> Tap characters to load/unload them from the boat.</li>
-      <li>🏁 <b>Win:</b> Move all 6 characters to the right island without violating the jealousy rule.</li>
-    </ul>
-    <div style="text-align: center; margin-top: 20px;">
-      <button onclick="closeRules()" style="font-size: 2em;">Close</button>
+        <ul>
+          <li><b>🎯 Objective:</b> Help all 3 couples cross the river safely to the right island.</li>
+          <li><b>🚤 Boat:</b> Can carry 1 or 2 people. Only people on the same side as the boat can board.</li>
+          <li><b>💔 Jealousy Rule:</b> No wife can be left with another man unless her husband is also present.</li>
+          <li><b>👆 Tap:</b> Tap characters to load/unload them.</li>
+          <li><b>🏁 Win:</b> Move all 6 to the right without breaking the rules.</li>
+        </ul>
+        <div style="text-align: center; margin-top: 20px;">
+          <button onclick="closeRules()" style="font-size: 2em;">Close</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-  </div>
-  
+
   <script>
     const boat = document.getElementById("boat");
     const characters = Array.from(document.querySelectorAll(".character"));
     const overlay = document.getElementById("overlay");
     const message = document.getElementById("message");
+
     let boatOccupants = [];
     let boatSide = "left";
     const boatLeft = 20;
@@ -222,7 +231,7 @@
 
     function updatePositions() {
       boat.style.left = boatSide === "left" ? `${boatLeft}vw` : `${boatRight}vw`;
-      characters.forEach((char, index) => {
+      characters.forEach(char => {
         const id = char.id;
         const state = characterState[id];
         const inBoat = state === "boat";
@@ -268,15 +277,9 @@
             if (!count[side][husband]) {
               const otherHusbands = ['h1','h2','h3'].filter(h => h !== husband && count[side][h]);
               if (otherHusbands.length > 0) {
-  const husbandEl = document.getElementById(husband);
-  husbandEl.style.bottom = '50vh'; // Jump
-  setTimeout(() => {
-               husbandEl.style.bottom = `${defaultPositions[husband].bottom}vh`; // Come back down
-                }, 800);
-
-              showEnd("Game Over! Jealous husband rule broken!", false);
-              return;
-             }
+                showEnd("❌ Game Over! Jealousy rule broken!", false);
+                return;
+              }
             }
           }
         }
@@ -285,33 +288,32 @@
       const allRight = characters.every(c => characterState[c.id] === "right");
       if (allRight) showEnd("🎉 All couples safely crossed!", true);
     }
-    
+
     function showEnd(msg, win) {
-  overlay.style.display = "flex";
-  message.textContent = msg;
-  gameOverTriggered = true;
-}
+      overlay.style.display = "flex";
+      message.textContent = msg;
+      gameOverTriggered = true;
+    }
 
+    function resetGame() {
+      gameOverTriggered = false;
+      overlay.style.display = "none";
+      boatSide = "left";
+      boatOccupants = [];
+      characters.forEach(c => {
+        characterState[c.id] = "left";
+        c.style.bottom = `${defaultPositions[c.id].bottom}vh`;
+      });
+      updatePositions();
+    }
 
-function resetGame() {
-  gameOverTriggered = false;
-  overlay.style.display = "none";
-  boatSide = "left";
-  boatOccupants = [];
-  characters.forEach(c => {
-    characterState[c.id] = "left";
-    c.style.bottom = `${defaultPositions[c.id].bottom}vh`;
-  });
-  updatePositions();
-}
+    function showRules() {
+      document.getElementById("rulesOverlay").style.display = "flex";
+    }
 
-function showRules() {
-  document.getElementById("rulesOverlay").style.display = "flex";
-}
-
-function closeRules() {
-  document.getElementById("rulesOverlay").style.display = "none";
-}
+    function closeRules() {
+      document.getElementById("rulesOverlay").style.display = "none";
+    }
 
     updatePositions();
   </script>
