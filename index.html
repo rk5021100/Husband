@@ -95,6 +95,31 @@
       z-index: 999;
       animation: flash 0.3s ease-in-out;
     }
+
+    .rules-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  color: black;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.rules-box > div {
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  font-size: 1em;
+  line-height: 1.8;
+}
     @keyframes flash {
       0% { background: rgba(255, 0, 0, 0.9); }
       100% { background: rgba(255, 0, 0, 0); }
@@ -150,11 +175,8 @@
   
   
   <!-- Rules Overlay -->
-<div id="rulesOverlay" class="overlay">
-
-
-
-
+<div id="rulesOverlay" class="rules-box">
+  
      <div style="max-width: 90vw; max-height: 80vh; overflow-y: auto; text-align: left; background: white; border-radius: 20px; padding: 20px;">
         <h2 style="text-align: center;">📝 Game Rules</h2>
         <ul style="line-height: 1.8; font-size: 1em;">
