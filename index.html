@@ -147,23 +147,26 @@
       <button onclick="resetGame()">Restart</button>
     </div>
   </div>
-
-   <!-- Rules Overlay -->
-    <div id="rulesOverlay" class="overlay">
-      <div style="max-width: 90vh; max-height: 80vh; overflow-y: auto; text-align: justify; background: white; border-radius: 20px; padding: 30px 40px; color: black;">
-        <h2 style="text-align: center;">📜 Game Rules</h2>
-        <ul style="line-height: 1.8; font-size: 1em;">
-         <li>The boat can carry <strong>1 or 2 characters</strong> at a time.</li>
-         <li>Only characters on the <strong>same side as the boat</strong> can get on or off.</li>
-         <li><strong>No wife</strong> can be left with another man <strong>unless her husband is present</strong>.</li>
-         <li>If this rule is broken, the game will end with <strong>Game Over</strong>.</li>
-         <li>The goal is to get <strong>all 6 characters</strong> safely to the right island.</li>
+  
+  
+  
+  <!-- Rules Overlay -->
+<div id="rulesOverlay" class="overlay">
+  <div style="max-width: 90vw; max-height: 80vh; overflow-y: auto; text-align: justify; background: white;
+      border-radius: 20px; padding: 30px 40px; color: black;">
+    <h2 style="text-align: center;">📝 Game Rules</h2>
+    <ul style="line-height: 1.8; font-size: 1em;">
+      <li>🎯 <b>Objective:</b> Help all 3 couples (husbands and wives) cross the river safely to the right island.</li>
+      <li>🚤 <b>Boat:</b> Can carry 1 or 2 characters at a time. Only characters on the same side as the boat can board or disembark.</li>
+      <li>💔 <b>Jealousy Rule:</b> No wife can be left with another man unless her own husband is present. If this happens, the game ends in failure.</li>
+      <li>👆 <b>Tap:</b> Tap characters to load/unload them from the boat.</li>
+      <li>🏁 <b>Win:</b> Move all 6 characters to the right island without violating the jealousy rule.</li>
     </ul>
-        <div style="text-align: center; margin-top: 20px;">
-          <button onclick="closeRules()" style="font-size: 2em;">Close</button>
-        </div>
-      </div>
+    <div style="text-align: center; margin-top: 20px;">
+      <button onclick="closeRules()" style="font-size: 2em;">Close</button>
     </div>
+  </div>
+</div>
 
   
   <script>
