@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.0, user-scalable=no">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background: #87CEEB;
+      overflow: hidden;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .scene {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    .river {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 25vh;
+      background: #1E90FF;
+      z-index: 1;
+    }
+    .island {
+      position: absolute;
+      bottom: 0;
+      width: 50vh;
+      height: 30vh;
+      background: #228B22;
+      border-radius: 15px;
+      z-index: 2;
+    }
+    .island.left { left: 0; }
+    .island.right { right: 0; }
+    .character {
+      position: absolute;
+      width: 18vh;
+      z-index: 5;
+      cursor: pointer;
+      transition: all 1s ease;
+    }
+    .character.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+    .boat {
+      position: absolute;
+      width: 40vh;
+      height: auto;
+      bottom: 18vh;
+      left: 20vw;
+      z-index: 4;
+      transition: left 1s ease;
+      pointer-events: none;
+    }
+    .button-container {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 3vw;
+    }
+    button {
+      padding: 2vh 4vw;
+      font-size: 2.5vw;
+      font-weight: bold;
+      background: #fff;
+      border: 0.3vh solid #333;
+      border-radius: 1vh;
+      cursor: pointer;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 0, 0, 0.7);
+      color: white;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-size: 3em;
+      z-index: 999;
+      animation: flash 0.5s ease-in-out;
+    }
+    @keyframes flash {
+      0% { background-color: rgba(255, 0, 0, 0.9); }
+      100% { background-color: rgba(255, 0, 0, 0.7); }
+    }
+    .overlay button {
+      margin-top: 20px;
+      font-size: 2em;
+      padding: 10px 30px;
+    }
+    @media (orientation: portrait) {
+      body::before {
+        content: "Please rotate your device to landscape mode.";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 50px;
+        border-radius: 20px;
+        font-size: 3em;
+        color: #333;
+        text-align: center;
+        z-index: 999;
+      }
+      .scene {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="button-container">
+      <button onclick="moveBoat()">Move</button>
+      <button onclick="resetGame()">Reset</button>
+    </div>
+    <img id="h1" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/redman.png">
+    <img id="h2" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/blueman.png">
+    <img id="h3" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/yellowman.png">
+    <img id="w1" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/redbag.png">
+    <img id="w2" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/bluebag.png">
+    <img id="w3" class="character" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/yellowbag.png">
+    <img class="boat" id="boat" src="https://raw.githubusercontent.com/rk5021100/assets/main/photos/boat.png">
+    <div class="island left"></div>
+    <div class="island right"></div>
+    <div class="river"></div>
+    <div id="overlay" class="overlay">
+      <div id="message"></div>
+      <button onclick="resetGame()">Restart</button>
+    </div>
+  </div>
+  <script>
+    const boat = document.getElementById("boat");
+    const characters = Array.from(document.querySelectorAll(".character"));
+    const overlay = document.getElementById("overlay");
+    const message = document.getElementById("message");
+    let boatOccupants = [];
+    let boatSide = "left";
+    const boatLeft = 20;
+    const boatRight = 65;
+    const characterState = {};
+    const defaultPositions = {
+      h1: { left: 5, bottom: 25 }, h2: { left: 10, bottom: 25 }, h3: { left: 15, bottom: 25 },
+      w1: { left: 5, bottom: 12 }, w2: { left: 10, bottom: 12 }, w3: { left: 15, bottom: 12 }
+    };
+    let gameOverTriggered = false;
+
+    characters.forEach(char => {
+      characterState[char.id] = "left";
+      char.addEventListener("click", () => {
+        if (overlay.style.display === "flex") return;
+        if (characterState[char.id] === "boat") {
+          characterState[char.id] = boatSide;
+          boatOccupants = boatOccupants.filter(c => c !== char.id);
+        } else if (characterState[char.id] === boatSide && boatOccupants.length < 2) {
+          characterState[char.id] = "boat";
+          boatOccupants.push(char.id);
+        }
+        updatePositions();
+      });
+    });
+
+    function updatePositions() {
+      boat.style.left = boatSide === "left" ? `${boatLeft}vw` : `${boatRight}vw`;
+      characters.forEach((char, index) => {
+        const id = char.id;
+        const state = characterState[id];
+        const inBoat = state === "boat";
+        char.style.zIndex = inBoat ? 3 : 5;
+        if (inBoat) {
+          const offset = boatSide === "left" ? boatLeft : boatRight;
+          const seat = boatOccupants.indexOf(id);
+          char.style.left = `${offset + (seat === 0 ? 3 : 7)}vw`;
+          char.style.bottom = `28vh`;
+        } else {
+          const pos = defaultPositions[id];
+          const sideOffset = state === "left" ? 0 : 72;
+          char.style.left = `${sideOffset + pos.left}vw`;
+          char.style.bottom = `${pos.bottom}vh`;
+        }
+      });
+    }
+
+    function moveBoat() {
+      if (boatOccupants.length === 0) return;
+      boatSide = boatSide === "left" ? "right" : "left";
+      updatePositions();
+      setTimeout(() => {
+        boatOccupants.forEach(id => characterState[id] = boatSide);
+        boatOccupants = [];
+        updatePositions();
+        checkGameState();
+      }, 1000);
+    }
+
+    function checkGameState() {
+      const count = { left: {}, right: {} };
+      ['h1','h2','h3','w1','w2','w3'].forEach(id => {
+        let loc = characterState[id];
+        if (loc === 'boat') loc = boatSide;
+        count[loc][id] = true;
+      });
+
+      for (const side of ['left','right']) {
+        for (let wife of ['w1','w2','w3']) {
+          if (count[side][wife]) {
+            const husband = 'h' + wife[1];
+            if (!count[side][husband]) {
+              const otherHusbands = ['h1','h2','h3'].filter(h => h !== husband && count[side][h]);
+              if (otherHusbands.length > 0) {
+                document.getElementById(husband).style.bottom = '50vh';
+                showEnd("Game Over! Jealous husband rule broken!", false);
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      const allRight = characters.every(c => characterState[c.id] === "right");
+      if (allRight) showEnd("🎉 All couples safely crossed!", true);
+    }
+
+    function showEnd(msg, win) {
+      overlay.style.display = "flex";
+      message.textContent = msg;
+      if (!win) {
+        setTimeout(() => {
+          resetGame();
+        }, 2000);  // Adding a brief delay before restarting
+      }
+    }
+
+    function resetGame() {
+      if (gameOverTriggered) return; // Prevent restarting after Game Over
+      gameOverTriggered = false;
+
+      overlay.style.display = "none";
+      boatSide = "left";
+      boatOccupants = [];
+      characters.forEach(c => {
+        characterState[c.id] = "left";
+        c.style.bottom = `${defaultPositions[c.id].bottom}vh`;
+      });
+      updatePositions();
+    }
+
+    updatePositions();
+  </script>
+</body>
+</html>
