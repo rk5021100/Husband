@@ -126,42 +126,6 @@
   </style>
 </head>
 <body>
-  <div id="rulesModal" style="
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  font-size: 2vw;
-  z-index: 999;
-  padding: 5vh 5vw;
-  box-sizing: border-box;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: left;
-">
-  <div style="max-width: 800px;">
-    <h2 style="font-size: 3vw; margin-bottom: 2vh;">Game Rules</h2>
-    <ul>
-      <li>The boat can carry <strong>1 or 2 characters</strong> at a time.</li>
-      <li>Only characters on the <strong>same side as the boat</strong> can get on or off.</li>
-      <li><strong>No wife</strong> can be left with another man <strong>unless her husband is present</strong>.</li>
-      <li>If this rule is broken, the game will end with <strong>Game Over</strong>.</li>
-      <li>The goal is to get <strong>all 6 characters</strong> safely to the right island.</li>
-    </ul>
-    <button onclick="closeRules()" style="
-      margin-top: 30px;
-      font-size: 2vw;
-      padding: 10px 30px;
-      background: #fff;
-      color: #000;
-      border-radius: 1vh;
-      cursor: pointer;
-    ">Close</button>
-  </div>
-</div>
   <div class="scene">
     <div class="button-container">
       <button onclick="moveBoat()">Move</button>
@@ -183,6 +147,26 @@
       <button onclick="resetGame()">Restart</button>
     </div>
   </div>
+
+   <!-- Rules Overlay -->
+    <div id="rulesOverlay" class="overlay">
+      <div style="max-width: 90vw; max-height: 80vh; overflow-y: auto; text-align: left; background: white; border-radius: 20px; padding: 20px; color: black;">
+        <h2 style="text-align: center;">📜 Game Rules</h2>
+        <ul style="line-height: 1.8; font-size: 1em;">
+          <li>🧍‍♂️ <b>People:</b> There are 3 missionaries and 3 cannibals.</li>
+          <li>🚤 <b>Boat:</b> The boat can carry a maximum of 2 people.</li>
+          <li>🌊 <b>Crossing:</b> Only one or two people can be in the boat when crossing the river.</li>
+          <li>⚠️ <b>Danger:</b> If at any time, there are more cannibals than missionaries on either bank, the cannibals will eat the missionaries.</li>
+          <li>🎯 <b>Goal:</b> Safely transport all missionaries and cannibals to the other side of the river.</li>
+          <li>🚫 <b>Constraint:</b> The number of missionaries must always be greater than or equal to the number of cannibals on each side of the river.</li>
+        </ul>
+        <div style="text-align: center; margin-top: 20px;">
+          <button onclick="closeRules()" style="font-size: 2em;">Close</button>
+        </div>
+      </div>
+    </div>
+
+  
   <script>
     const boat = document.getElementById("boat");
     const characters = Array.from(document.querySelectorAll(".character"));
