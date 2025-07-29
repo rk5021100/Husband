@@ -85,7 +85,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(255, 0, 0, 0.7);
+      background: transparent;
       color: white;
       display: none;
       justify-content: center;
@@ -93,11 +93,11 @@
       flex-direction: column;
       font-size: 3em;
       z-index: 999;
-      animation: flash 0.5s ease-in-out;
+      animation: flash 0.3s ease-in-out;
     }
     @keyframes flash {
-      0% { background-color: rgba(255, 0, 0, 0.9); }
-      100% { background-color: rgba(255, 0, 0, 0.7); }
+      0% { background: rgba(255, 0, 0, 0.9); }
+      100% { background: rgba(255, 0, 0, 0); }
     }
     .overlay button {
       margin-top: 20px;
@@ -225,10 +225,15 @@
             if (!count[side][husband]) {
               const otherHusbands = ['h1','h2','h3'].filter(h => h !== husband && count[side][h]);
               if (otherHusbands.length > 0) {
-                document.getElementById(husband).style.bottom = '50vh';
-                showEnd("Game Over! Jealous husband rule broken!", false);
-                return;
-              }
+  const husbandEl = document.getElementById(husband);
+  husbandEl.style.bottom = '50vh'; // Jump
+  setTimeout(() => {
+               husbandEl.style.bottom = `${defaultPositions[husband].bottom}vh`; // Come back down
+                }, 800);
+
+              showEnd("Game Over! Jealous husband rule broken!", false);
+              return;
+             }
             }
           }
         }
@@ -237,30 +242,30 @@
       const allRight = characters.every(c => characterState[c.id] === "right");
       if (allRight) showEnd("🎉 All couples safely crossed!", true);
     }
-
+    
     function showEnd(msg, win) {
-      overlay.style.display = "flex";
-      message.textContent = msg;
-      if (!win) {
-        setTimeout(() => {
-          resetGame();
-        }, 2000);  // Adding a brief delay before restarting
-      }
-    }
+  overlay.style.display = "flex";
+  message.textContent = msg;
+  gameOverTriggered = true;
 
-    function resetGame() {
-      if (gameOverTriggered) return; // Prevent restarting after Game Over
-      gameOverTriggered = false;
+  overlay.classList.add("flash");
+  setTimeout(() => {
+    overlay.classList.remove("flash");  // Remove red flash after 0.5s
+  }, 500);
+}
 
-      overlay.style.display = "none";
-      boatSide = "left";
-      boatOccupants = [];
-      characters.forEach(c => {
-        characterState[c.id] = "left";
-        c.style.bottom = `${defaultPositions[c.id].bottom}vh`;
-      });
-      updatePositions();
-    }
+
+function resetGame() {
+  gameOverTriggered = false;
+  overlay.style.display = "none";
+  boatSide = "left";
+  boatOccupants = [];
+  characters.forEach(c => {
+    characterState[c.id] = "left";
+    c.style.bottom = `${defaultPositions[c.id].bottom}vh`;
+  });
+  updatePositions();
+}
 
     updatePositions();
   </script>
